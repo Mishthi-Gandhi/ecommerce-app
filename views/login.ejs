@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Sign in" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<% const f = locals.form || {}; %>
+<main class="container my-5" style="max-width: 440px;">
+  <h2 class="mb-4">Sign in</h2>
+  <form method="post" action="/user/login" class="card card-body shadow-sm">
+    <div class="mb-3">
+      <label for="email" class="form-label">Email address</label>
+      <input type="email" name="email" class="form-control" id="email" value="<%= f.email || '' %>" required>
+    </div>
+    <div class="mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" name="password" class="form-control" id="password" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Sign in</button>
+    <p class="text-center mt-3 mb-0">New here? <a href="/user/register">Create an account</a></p>
+  </form>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>

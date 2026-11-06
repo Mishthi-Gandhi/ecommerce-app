@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "My profile" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<% const a = user.address || {}; %>
+<main class="container my-4" style="max-width: 720px;">
+  <h2 class="mb-4">My profile</h2>
+
+  <form method="post" action="/user/profile" class="card card-body shadow-sm mb-4">
+    <h5 class="mb-3">Personal details</h5>
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <label class="form-label">Name</label>
+        <input type="text" class="form-control" name="name" value="<%= user.name %>" required>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">Phone number</label>
+        <input type="tel" inputmode="numeric" maxlength="10" class="form-control" name="phoneNo" value="<%= user.phoneNo %>" required>
+      </div>
+      <div class="col-12">
+        <label class="form-label">Email (cannot be changed)</label>
+        <input type="email" class="form-control" value="<%= user.email %>" disabled>
+      </div>
+    </div>
+    <h5 class="mb-3">Default delivery address</h5>
+    <%- include("./partials/addressFields", { a }) %>
+    <button type="submit" class="btn btn-primary mt-4 align-self-start">Save changes</button>
+  </form>
+
+  <form method="post" action="/user/password" class="card card-body shadow-sm">
+    <h5 class="mb-3">Change password</h5>
+    <div class="mb-3">
+      <label class="form-label">Current password</label>
+      <input type="password" class="form-control" name="currentPassword" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">New password</label>
+      <input type="password" class="form-control" name="newPassword" required>
+      <div class="form-text">8+ characters with uppercase, lowercase, a number and one of @$%^*!#&</div>
+    </div>
+    <button type="submit" class="btn btn-outline-dark align-self-start">Update password</button>
+  </form>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>

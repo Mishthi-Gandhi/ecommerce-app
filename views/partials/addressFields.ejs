@@ -1,0 +1,23 @@
+<%# expects `a` = an address object (may be empty) %>
+<div class="row g-3">
+  <div class="col-12">
+    <label class="form-label">Street</label>
+    <input type="text" class="form-control" name="address[street]" value="<%= a.street || '' %>" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">City</label>
+    <input type="text" class="form-control" name="address[city]" value="<%= a.city || '' %>" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">State</label>
+    <input type="text" class="form-control" name="address[state]" value="<%= a.state || '' %>" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Pincode</label>
+    <input type="text" inputmode="numeric" maxlength="6" class="form-control" name="address[pincode]" value="<%= a.pincode || '' %>" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Country</label>
+    <input type="text" class="form-control" name="address[country]" value="<%= a.country || 'India' %>" required>
+  </div>
+</div>

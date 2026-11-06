@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">Swifty</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/product">Products</a></li>
+        <% if (locals.user && user.role === "admin") { %>
+          <li class="nav-item"><a class="nav-link" href="/product/new">Add Product</a></li>
+          <li class="nav-item"><a class="nav-link" href="/admin/orders">Manage Orders</a></li>
+        <% } %>
+      </ul>
+      <ul class="navbar-nav align-items-lg-center">
+        <% if (locals.user) { %>
+          <li class="nav-item"><a class="nav-link" href="/order">My Orders</a></li>
+          <li class="nav-item"><a class="nav-link" href="/cart">Cart (<span id="cartCount"><%= locals.cartCount || 0 %></span>)</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><%= user.name %></a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="/user/profile">My Profile</a></li>
+              <li>
+                <form method="post" action="/user/logout" class="m-0">
+                  <button type="submit" class="dropdown-item">Log out</button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        <% } else { %>
+          <li class="nav-item"><a class="nav-link" href="/user/login">Sign in</a></li>
+          <li class="nav-item"><a class="nav-link" href="/user/register">Sign up</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>
+<% if (locals.error) { %>
+  <div class="container mt-4"><div class="alert alert-danger" role="alert"><%= locals.error %></div></div>
+<% } %>
+<% if (locals.success) { %>
+  <div class="container mt-4"><div class="alert alert-success" role="alert"><%= locals.success %></div></div>
+<% } %>
