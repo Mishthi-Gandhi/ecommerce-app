@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Products" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main class="container my-4">
+  <h2 class="mb-3">All Products</h2>
+
+  <form method="get" action="/product" class="card card-body mb-4 shadow-sm">
+    <div class="row g-2 align-items-end">
+      <div class="col-lg-4">
+        <label class="form-label small mb-1">Search</label>
+        <input type="text" name="search" class="form-control" placeholder="Search for a product" value="<%= filters.search %>">
+      </div>
+      <div class="col-6 col-lg-2">
+        <label class="form-label small mb-1">Category</label>
+        <select name="category" class="form-select" data-autosubmit>
+          <option value="">All</option>
+          <% categories.forEach(c => { %>
+            <option value="<%= c %>" <%= filters.category === c ? "selected" : "" %>><%= c %></option>
+          <% }) %>
+        </select>
+      </div>
+      <div class="col-6 col-lg-2">
+        <label class="form-label small mb-1">Sort by</label>
+        <select name="sort" class="form-select" data-autosubmit>
+          <option value="">Newest</option>
+          <option value="price_asc" <%= filters.sort === "price_asc" ? "selected" : "" %>>Price: Low to High</option>
+          <option value="price_desc" <%= filters.sort === "price_desc" ? "selected" : "" %>>Price: High to Low</option>
+          <option value="name_asc" <%= filters.sort === "name_asc" ? "selected" : "" %>>Name: A → Z</option>
+          <option value="name_desc" <%= filters.sort === "name_desc" ? "selected" : "" %>>Name: Z → A</option>
+        </select>
+      </div>
+      <div class="col-6 col-lg-1">
+        <label class="form-label small mb-1">Min ₹</label>
+        <input type="number" min="0" name="minPrice" class="form-control" value="<%= filters.minPrice %>">
+      </div>
+      <div class="col-6 col-lg-1">
+        <label class="form-label small mb-1">Max ₹</label>
+        <input type="number" min="0" name="maxPrice" class="form-control" value="<%= filters.maxPrice %>">
+      </div>
+      <div class="col-lg-2 d-flex gap-2">
+        <button class="btn btn-dark flex-grow-1" type="submit">Apply</button>
+        <a href="/product" class="btn btn-outline-secondary">Reset</a>
+      </div>
+    </div>
+    <div class="form-check mt-2">
+      <input class="form-check-input" type="checkbox" name="inStock" value="true" id="inStock" data-autosubmit <%= filters.inStock === "true" ? "checked" : "" %>>
+      <label class="form-check-label" for="inStock">In stock only</label>
+    </div>
+  </form>
+
+  <p class="text-muted"><%= total %> product(s) found</p>
+  <% if (products.length === 0) { %>
+    <div class="alert alert-info">No products match your search.</div>
+  <% } %>
+  <div class="row">
+    <% products.forEach(product => { %>
+      <%- include("./partials/productCard", { product }) %>
+    <% }) %>
+  </div>
+
+  <% if (noOfPages > 1) { %>
+    <% const link = (p) => "/product?" + (qs ? qs + "&" : "") + "page=" + p; %>
+    <nav class="mt-3" aria-label="Pagination">
+      <ul class="pagination justify-content-center flex-wrap">
+        <% if (currPage > 1) { %><li class="page-item"><a class="page-link" href="<%= link(currPage - 1) %>">Previous</a></li><% } %>
+        <% for (let i = 1; i <= noOfPages; i++) { %>
+          <li class="page-item <%= i === currPage ? 'active' : '' %>"><a class="page-link" href="<%= link(i) %>"><%= i %></a></li>
+        <% } %>
+        <% if (currPage < noOfPages) { %><li class="page-item"><a class="page-link" href="<%= link(currPage + 1) %>">Next</a></li><% } %>
+      </ul>
+    </nav>
+  <% } %>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>

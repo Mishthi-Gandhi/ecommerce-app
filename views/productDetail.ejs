@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: product.name }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main class="container my-5">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/product">Products</a></li>
+      <li class="breadcrumb-item"><a href="/product?category=<%= encodeURIComponent(product.category) %>"><%= product.category %></a></li>
+      <li class="breadcrumb-item active" aria-current="page"><%= product.name %></li>
+    </ol>
+  </nav>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <img src="<%= product.image[0] %>" class="img-fluid rounded border bg-light p-3 w-100" alt="<%= product.name %>">
+    </div>
+    <div class="col-md-6">
+      <span class="badge text-bg-light mb-2"><%= product.category %></span>
+      <h1 class="h2"><%= product.name %></h1>
+      <h3 class="my-3">₹<%= inr(product.price) %></h3>
+      <p><%= product.description %></p>
+
+      <% if (product.stock > 0) { %>
+        <p class="text-success"><%= product.stock %> in stock</p>
+        <button class="btn btn-success btn-lg add-to-cart" data-id="<%= product._id %>">Add to Cart</button>
+      <% } else { %>
+        <p class="text-danger">Out of stock</p>
+        <button class="btn btn-secondary btn-lg" disabled>Out of stock</button>
+      <% } %>
+
+      <% if (locals.user && user.role === "admin") { %>
+        <hr>
+        <div class="d-flex gap-2">
+          <a href="/product/<%= product._id %>/edit" class="btn btn-outline-primary">Edit product</a>
+          <form method="post" action="/product/<%= product._id %>/delete" data-confirm="Delete this product permanently?">
+            <button type="submit" class="btn btn-outline-danger">Delete product</button>
+          </form>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>

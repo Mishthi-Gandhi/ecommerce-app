@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Home" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main>
+  <section class="hero py-5">
+    <div class="container py-4 text-center">
+      <h1 class="display-5 fw-bold">Welcome to Swifty</h1>
+      <p class="lead mb-4">Everything you need, delivered fast.</p>
+      <a href="/product" class="btn btn-light btn-lg">Shop now</a>
+    </div>
+  </section>
+
+  <div class="container my-5">
+    <% if (categories.length) { %>
+      <h4 class="mb-3">Shop by category</h4>
+      <div class="mb-5 d-flex flex-wrap gap-2">
+        <% categories.forEach(c => { %>
+          <a class="btn btn-outline-dark" href="/product?category=<%= encodeURIComponent(c) %>"><%= c %></a>
+        <% }) %>
+      </div>
+    <% } %>
+
+    <h4 class="mb-3">New arrivals</h4>
+    <% if (products.length === 0) { %>
+      <div class="alert alert-info">No products yet. An admin can add products from the "Add Product" page.</div>
+    <% } %>
+    <div class="row">
+      <% products.forEach(product => { %>
+        <%- include("./partials/productCard", { product }) %>
+      <% }) %>
+    </div>
+  </div>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>
