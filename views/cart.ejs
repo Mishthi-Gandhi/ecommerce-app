@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Your cart" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main class="container my-4">
+  <h2 class="mb-4">Your cart</h2>
+
+  <% if (!cart || cart.products.length === 0) { %>
+    <div class="alert alert-info">Your cart is empty. <a href="/product">Continue shopping</a></div>
+  <% } else { %>
+    <% cart.products.forEach(item => { const p = item.productId; %>
+      <div class="card mb-3 shadow-sm">
+        <div class="card-body d-flex flex-wrap align-items-center gap-3">
+          <img src="<%= p.image[0] %>" class="cart-img rounded" alt="<%= p.name %>">
+          <div class="flex-grow-1">
+            <h5 class="mb-1"><a href="/product/<%= p._id %>" class="text-decoration-none text-dark"><%= p.name %></a></h5>
+            <p class="mb-1 text-muted">₹<%= inr(p.price) %> each</p>
+            <% if (item.quantity > p.stock) { %><p class="mb-0 small text-danger">Only <%= p.stock %> left in stock</p><% } %>
+          </div>
+          <form action="/cart/update/<%= p._id %>" method="post" class="d-flex align-items-center gap-2">
+            <button type="submit" name="action" value="decrease" class="btn btn-outline-secondary btn-sm" aria-label="Decrease quantity">−</button>
+            <span class="px-2"><%= item.quantity %></span>
+            <button type="submit" name="action" value="increase" class="btn btn-outline-secondary btn-sm" aria-label="Increase quantity" <%= item.quantity >= p.stock ? "disabled" : "" %>>+</button>
+          </form>
+          <div class="text-end" style="min-width:110px;"><strong>₹<%= inr(p.price * item.quantity) %></strong></div>
+          <form action="/cart/remove/<%= p._id %>" method="post">
+            <button type="submit" class="btn btn-outline-danger btn-sm">Remove</button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+
+    <div class="d-flex justify-content-between align-items-center mt-4">
+      <h3>Total: ₹<%= inr(total) %></h3>
+      <a href="/checkout" class="btn btn-success btn-lg">Proceed to checkout</a>
+    </div>
+  <% } %>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>
