@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Order details" }) %></head>
+<body class="bg-light">
+<%- include("./partials/nav") %>
+<main class="container py-4">
+  <div class="card shadow border-0">
+    <div class="card-body">
+
+      <% if (justPlaced) { %>
+        <div class="text-center mb-4">
+          <h1 class="text-success">✅ Order placed successfully!</h1>
+          <p class="text-muted">Thank you for shopping with us.</p>
+        </div>
+        <hr>
+      <% } else { %>
+        <h2 class="mb-3">Order details</h2>
+      <% } %>
+
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <h5>Order</h5>
+          <p class="mb-1"><strong>ID:</strong> <%= order._id %></p>
+          <p class="mb-1"><strong>Date:</strong> <%= order.createdAt.toLocaleString("en-IN") %></p>
+          <p class="mb-0"><strong>Status:</strong> <span class="badge <%= statusClass(order.status) %>"><%= order.status %></span></p>
+        </div>
+        <div class="col-md-4">
+          <h5>Payment</h5>
+          <p class="mb-1"><strong>Method:</strong> <%= PAYMENT_METHODS[order.payment.method] || order.payment.method %></p>
+          <p class="mb-1"><strong>Status:</strong> <span class="badge <%= statusClass(order.payment.status) %>"><%= order.payment.status %></span></p>
+          <% if (order.payment.transactionId) { %><p class="mb-0"><strong>Txn ID:</strong> <%= order.payment.transactionId %></p><% } %>
+        </div>
+        <div class="col-md-4">
+          <h5>Shipping to</h5>
+          <% if (order.contact && order.contact.name) { %><p class="mb-1"><%= order.contact.name %> · <%= order.contact.phoneNo %></p><% } %>
+          <p class="mb-1"><%= order.address.street %></p>
+          <p class="mb-1"><%= order.address.city %>, <%= order.address.state %></p>
+          <p class="mb-0"><%= order.address.country %> - <%= order.address.pincode %></p>
+        </div>
+      </div>
+
+      <h4 class="mb-3">Items ordered</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+          <thead class="table-dark">
+            <tr><th>Product</th><th>Price</th><th>Quantity</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            <% order.products.forEach(item => { %>
+              <tr>
+                <td>
+                  <img src="<%= item.image || '/images/placeholder.svg' %>" class="cart-img rounded me-2" style="width:50px;height:50px;" alt="">
+                  <%= item.name %>
+                </td>
+                <td>₹<%= inr(item.price) %></td>
+                <td><%= item.quantity %></td>
+                <td>₹<%= inr(item.price * item.quantity) %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-end"><h3>Grand total: ₹<%= inr(order.total) %></h3></div>
+
+      <div class="text-center mt-4 d-flex justify-content-center gap-2">
+        <a href="/product" class="btn btn-primary">Continue shopping</a>
+        <a href="/order" class="btn btn-outline-secondary">All my orders</a>
+        <% if (order.status === "Placed" && order.userId.toString() === user.id) { %>
+          <form method="post" action="/order/<%= order._id %>/cancel" data-confirm="Cancel this order?">
+            <button type="submit" class="btn btn-outline-danger">Cancel order</button>
+          </form>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>

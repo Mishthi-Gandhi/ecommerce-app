@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "My orders" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main class="container my-4">
+  <h2 class="mb-4">My orders</h2>
+
+  <% if (orders.length === 0) { %>
+    <div class="alert alert-info">You haven't placed any orders yet. <a href="/product">Start shopping</a></div>
+  <% } %>
+
+  <% orders.forEach(order => { %>
+    <div class="card shadow-sm mb-4">
+      <div class="card-header d-flex flex-wrap justify-content-between gap-2">
+        <div><strong>Order</strong> <a href="/order/<%= order._id %>"><%= order._id %></a></div>
+        <div>
+          <span class="badge <%= statusClass(order.status) %>"><%= order.status %></span>
+          <span class="badge <%= statusClass(order.payment.status) %>">Payment: <%= order.payment.status %></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <% order.products.forEach(item => { %>
+          <div class="row align-items-center mb-3">
+            <div class="col-3 col-md-2"><img src="<%= item.image || '/images/placeholder.svg' %>" class="img-fluid rounded" style="height:80px;object-fit:contain;" alt=""></div>
+            <div class="col-5 col-md-7">
+              <h6 class="mb-1"><%= item.name %></h6>
+              <small class="text-muted">Quantity: <%= item.quantity %></small>
+            </div>
+            <div class="col-4 col-md-3 text-end">₹<%= inr(item.price) %></div>
+          </div>
+        <% }) %>
+        <hr>
+        <div class="d-flex flex-wrap justify-content-between align-items-end gap-2">
+          <div>
+            <h6 class="mb-1">Shipping address</h6>
+            <p class="mb-0 small"><%= order.address.street %>, <%= order.address.city %>, <%= order.address.state %><br><%= order.address.country %> - <%= order.address.pincode %></p>
+          </div>
+          <div class="text-end">
+            <h5 class="mb-0">Total: ₹<%= inr(order.total) %></h5>
+            <small class="text-muted"><%= order.createdAt.toDateString() %></small>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>
