@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><%- include("./partials/head", { title: "Manage orders" }) %></head>
+<body>
+<%- include("./partials/nav") %>
+<main class="container my-4">
+  <h2 class="mb-4">All orders (admin)</h2>
+
+  <% if (orders.length === 0) { %><div class="alert alert-info">No orders yet.</div><% } %>
+
+  <% orders.forEach(order => { const next = transitions[order.status] || []; %>
+    <div class="card mb-3 shadow-sm">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-5">
+            <h6 class="mb-1">Order <a href="/order/<%= order._id %>"><%= order._id %></a></h6>
+            <p class="mb-1 small">Customer: <%= order.userId ? order.userId.name : "(deleted user)" %><% if (order.userId) { %> · <%= order.userId.email %><% } %></p>
+            <p class="mb-1 small">Placed: <%= order.createdAt.toLocaleString("en-IN") %></p>
+            <p class="mb-0 small">Items: <%= order.products.map(i => i.name + " × " + i.quantity).join(", ") %></p>
+          </div>
+          <div class="col-md-3">
+            <p class="mb-1"><strong>₹<%= inr(order.total) %></strong></p>
+            <p class="mb-1 small"><%= PAYMENT_METHODS[order.payment.method] || order.payment.method %></p>
+            <span class="badge <%= statusClass(order.payment.status) %>">Payment: <%= order.payment.status %></span>
+          </div>
+          <div class="col-md-4">
+            <p class="mb-2">Status: <span class="badge <%= statusClass(order.status) %>"><%= order.status %></span></p>
+            <% if (next.length) { %>
+              <form method="POST" action="/admin/orders/<%= order._id %>/status" class="d-flex gap-2">
+                <select name="status" class="form-select form-select-sm">
+                  <% next.forEach(s => { %><option value="<%= s %>"><%= s %></option><% }) %>
+                </select>
+                <button class="btn btn-primary btn-sm">Update</button>
+              </form>
+            <% } else { %>
+              <small class="text-muted">No further changes possible</small>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% }) %>
+</main>
+<%- include("./partials/script") %>
+</body>
+</html>
